@@ -1,0 +1,43 @@
+<UserControl x:Class="WorkweekChecker.Controls.ModernDatePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="root" Width="240" Height="36">
+    <Grid>
+        <Border CornerRadius="10"
+                Background="{DynamicResource ControlBg}"
+                BorderBrush="{DynamicResource ControlBorder}"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Margin="10,0,0,0"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         Foreground="{DynamicResource TextPrimary}"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding DateText, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="YYYY-MM-DD"/>
+                <Button Grid.Column="1" Width="36" Height="36"
+                        Background="{DynamicResource ControlBg}"
+                        BorderBrush="{DynamicResource ControlBorder}"
+                        Cursor="Hand" Padding="0"
+                        Click="OpenCalendar_Click">
+                    <TextBlock Text="📅" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                </Button>
+            </Grid>
+        </Border>
+        <Popup x:Name="CalendarPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=root}"
+               StaysOpen="False" AllowsTransparency="True">
+            <Border Background="{DynamicResource CardBg}" CornerRadius="12" Padding="8">
+                <Calendar x:Name="Cal"
+                          Foreground="{DynamicResource TextPrimary}"
+                          Background="{DynamicResource CardBg}"
+                          SelectedDate="{Binding SelectedDate, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          DisplayDate="{Binding SelectedDate, ElementName=root}"/>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

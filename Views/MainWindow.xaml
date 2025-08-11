@@ -1,0 +1,136 @@
+<Window x:Class="WorkweekChecker.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:WorkweekChecker.ViewModels"
+        xmlns:ctrls="clr-namespace:WorkweekChecker.Controls"
+        xmlns:conv="clr-namespace:WorkweekChecker.Converters"
+        Title="大小周查询 - Workweek Checker"
+        Height="527" Width="1102"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        DataContext="{Binding Main, Source={StaticResource Locator}}">
+    <Window.Resources>
+        <conv:BoolToBrushConverter x:Key="BoolToBrush"/>
+        <conv:BoolToTextConverter x:Key="BoolToTextConverter"/>
+    </Window.Resources>
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{DynamicResource BgTop}" Offset="0"/>
+            <GradientStop Color="{DynamicResource BgBottom}" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="False">
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+                <TextBlock Text="大小周助手" FontSize="24" FontWeight="Bold"/>
+                <TextBlock Text="支持法定节假日、主题切换、智能基准周" Foreground="{DynamicResource TextSecondary}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                <TextBlock Text="主题：" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox Width="160" SelectedIndex="{Binding ThemeIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="明亮 (Light)"/>
+                    <ComboBoxItem Content="暗色 (Dark)"/>
+                </ComboBox>
+                <Button Content="设置" Command="{Binding OpenSettingsCommand}" Style="{DynamicResource SecondaryButton}" Margin="12,0,0,0"/>
+            </StackPanel>
+        </DockPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <Border Style="{DynamicResource Card}" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="今天" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
+                            <TextBlock Text="{Binding TodayString}" FontSize="20" FontWeight="Bold"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" CornerRadius="10" Padding="12,6"
+                                Background="{Binding TodayIsDoubleRest, Converter={StaticResource BoolToBrush}}">
+                            <TextBlock Text="{Binding TodayRestText}" 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Grid.Row="1" Grid.ColumnSpan="2" Margin="0,12,0,0" Style="{DynamicResource Card}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="本周休息：" Margin="0,0,8,0" Foreground="{DynamicResource TextSecondary}"/>
+                                <ctrls:Badge Text="周一" IsRest="{Binding WeekRestMap[Monday]}"/>
+                                <ctrls:Badge Text="周二" IsRest="{Binding WeekRestMap[Tuesday]}" Margin="8,0,0,0"/>
+                                <ctrls:Badge Text="周三" IsRest="{Binding WeekRestMap[Wednesday]}" Margin="8,0,0,0"/>
+                                <ctrls:Badge Text="周四" IsRest="{Binding WeekRestMap[Thursday]}" Margin="8,0,0,0"/>
+                                <ctrls:Badge Text="周五" IsRest="{Binding WeekRestMap[Friday]}" Margin="8,0,0,0"/>
+                                <ctrls:Badge Text="周六" EmphasizedText="周六 休" IsRest="{Binding WeekRestMap[Saturday]}" Margin="8,0,0,0"/>
+                                <ctrls:Badge Text="周日 休" IsRest="{Binding WeekRestMap[Sunday]}" Margin="8,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Border Style="{DynamicResource Card}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="查询指定日期" Style="{DynamicResource SectionTitle}"/>
+                        <Border Grid.Row="0" Grid.Column="1" CornerRadius="10" Padding="8,4"
+                                Background="{Binding QueryIsDoubleRest, Converter={StaticResource BoolToBrush}}">
+                            <TextBlock Text="{Binding QueryIsDoubleRest, Converter={StaticResource BoolToTextConverter}}"
+                                       FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <ctrls:ModernDatePicker Width="240" SelectedDate="{Binding QueryDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button Content="查询" Command="{Binding QueryCommand}" Style="{DynamicResource PrimaryButton}"/>
+                            <Button Content="今天" Command="{Binding TodayCommand}" Style="{DynamicResource SecondaryButton}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0">
+                            <TextBlock Text="{Binding QueryResultText}" FontSize="16" VerticalAlignment="Center"/>
+                            <Border Margin="0,12,0,0" Style="{DynamicResource Card}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="该周休息：" Margin="0,0,8,0" Foreground="{DynamicResource TextSecondary}"/>
+                                    <ctrls:Badge Text="周一" IsRest="{Binding QueryWeekRestMap[Monday]}"/>
+                                    <ctrls:Badge Text="周二" IsRest="{Binding QueryWeekRestMap[Tuesday]}" Margin="8,0,0,0"/>
+                                    <ctrls:Badge Text="周三" IsRest="{Binding QueryWeekRestMap[Wednesday]}" Margin="8,0,0,0"/>
+                                    <ctrls:Badge Text="周四" IsRest="{Binding QueryWeekRestMap[Thursday]}" Margin="8,0,0,0"/>
+                                    <ctrls:Badge Text="周五" IsRest="{Binding QueryWeekRestMap[Friday]}" Margin="8,0,0,0"/>
+                                    <ctrls:Badge Text="周六" EmphasizedText="周六 休" IsRest="{Binding QueryWeekRestMap[Saturday]}" Margin="8,0,0,0"/>
+                                    <ctrls:Badge Text="周日 休" IsRest="{Binding QueryWeekRestMap[Sunday]}" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="16,0,0,0">
+                <Border Style="{DynamicResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="说明" Style="{DynamicResource SectionTitle}"/>
+                        <TextBlock Foreground="{DynamicResource TextSecondary}">
+                            本工具基于“基准双休周+大小周交替”规则，并叠加法定节假日/调休覆盖。
+                            设置入口在右上角“设置”。
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

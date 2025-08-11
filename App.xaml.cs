@@ -1,0 +1,1 @@
+using System.Windows; namespace WorkweekChecker { public partial class App : Application { } }
